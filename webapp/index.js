@@ -6,6 +6,7 @@ let coordenadasIniciales;
 let coordenadasIntermedias;
 let coordenadasFinales;
 //let arregloTemporal1;
+let listaCoordenadasTotales;
 
 function initMap()
 {
@@ -14,6 +15,11 @@ function initMap()
         center: {lat: 4.66421, lng: -74.07861},
         zoom: 16
     });
+    directionsRenderer = new google.maps.DirectionsRenderer({
+        suppressMarkers: true
+    });
+    directionsRenderer.setMap(map);
+    directionsService = new google.maps.DirectionsService();
     geocoder = new google.maps.Geocoder();
     coordenadasIniciales = {lat: 4.67000, lng: -74.07000};
     coordenadasIntermedias= [
@@ -23,8 +29,17 @@ function initMap()
 
         ]; 
     coordenadasFinales = {lat: 4.69000, lng: -74.12000};
-    arregloTemporal1 = [];
+    //arregloTemporal1 = [];
     generarMarcadores();
+    listaCoordenadasTotales = [];
+    listaCoordenadasTotales.push(coordenadasIniciales);
+    var temp;
+    for(temp = 0; temp < coordenadasIntermedias.length; temp++)
+    {
+        listaCoordenadasTotales.push(coordenadasIntermedias[temp]);
+    }
+    listaCoordenadasTotales.push(coordenadasFinales);
+    generarRuta();
 }
 
 
@@ -100,21 +115,38 @@ function generarMarcadores()
 
 }
 
-function imprimirMarcadoresIntermedios(arregloTemporal1)
+
+function generarRuta()
 {
-    var j;
-    console.log("tamanio:" + arregloTemporal1.length);
-    console.log(arregloTemporal1);
-    for(j = 0; j < arregloTemporal1.length; j++)
+    var arregloTemporal2 = []
+    var k
+    for(k = 0; k < coordenadasIntermedias.length; k++)
     {
-        console.log(j);
-        resultados = arregloTemporal1[j];
-       //map.setCenter(resultados[0].geometry.location);
-        var marker = new google.maps.Marker
-        ({
-            map: map,
-            position: resultados[0].geometry.location,
-            title : "Punto Intermedio " + j + ":" + resultados[0].formatted_address
-        });
+        arregloTemporal2.push({location: coordenadasIntermedias[k], stopover:true});
     }
+    let request = {
+        origin: coordenadasIniciales,
+        //language: 'de',
+        provideRouteAlternatives: true,
+        avoidHighways: false,
+        //travelMode: 'WALKING',
+        destination:coordenadasFinales,
+        travelMode: 'DRIVING',
+        //travelMode: 'TRANSIT',
+        //transitOptions: {
+        //    departureTime: new Date(1337675679473),
+        //    modes: ['BUS'],
+        //    routingPreference: 'FEWER_TRANSFERS'
+        //  },
+        waypoints: arregloTemporal2
+        
+    };
+    directionsService.route(request, function (result,status)
+    {
+        console.log(result);
+        if(status == 'OK')
+        {
+            directionsRenderer.setDirections(result);
+        }
+    });
 }
