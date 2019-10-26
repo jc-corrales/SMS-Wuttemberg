@@ -1,5 +1,7 @@
 {
-    "coordenadas":
+    "coordenadasIniciales": {"lat": 4.67909, "lng": -74.07723}, 
+
+    "coordenadasIntermedias":
     [
         {"lat": 4.67909, "lng": -74.07723},
         {"lat": 4.67909, "lng": -74.07723},
@@ -11,5 +13,6 @@
         {"lat": 4.67909, "lng": -74.07723},
         {"lat": 4.67909, "lng": -74.07723},
         {"lat": 4.67909, "lng": -74.07723}
-    ]
+    ],
+    "coordenadasFinales": {"lat": 4.67909, "lng": -74.07723}
 }
